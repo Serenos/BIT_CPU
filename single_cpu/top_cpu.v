@@ -27,6 +27,7 @@ module top_cpu(
     //PC&PC4
     wire [`PCSIZE] PC4;
     wire [`PCSIZE] PC;
+    wire [`INSTRSIZE] instrIndex;
     wire equal;
     wire branch;
     wire jump;
@@ -71,6 +72,7 @@ pc pc0(
     .PC4(PC4),
     .PC(PC),
     .signImm(signImm),
+    .instrIndex(instrIndex),
     .equal(equal),
     .branch(branch),
     .jump(jump)
@@ -95,7 +97,8 @@ decode decode0(
     .rt(rt),
     .im(im),
     .opcode(opcode),
-    .funcode(funcode)
+    .funcode(funcode),
+    .instrIndex(instrIndex)
 );
 
 
@@ -144,6 +147,7 @@ alu alu0(
     .aluControl(aluControl),
     .srcA(RD1),
     .srcB(srcB),
+    .equal(equal),
     .aluOut(aluOut)
 );
 

@@ -38,17 +38,21 @@ module controlUnit(
     output [`EXTENDSIGNAL_SIZE] signExtSignal
 );
 
-    assign regWrite = (opcode == `OP_ALL_ZERO && funcode == `FUNC_ADD)?1'b1:
-                    (opcode == `OP_ADDI || opcode == `OP_ADDIU || opcode == `OP_LUI || opcode == `OP_LW) ? 1'b1:1'b0;
+    assign regWrite = (opcode == `OP_ALL_ZERO && funcode == `FUNC_ADD)?1'b1
+                    :(opcode == `OP_ALL_ZERO && funcode == `FUNC_SRAV)?1'b1
+                    :(opcode == `OP_ADDI || opcode == `OP_ADDIU || opcode == `OP_LUI || opcode == `OP_LW ) ? 1'b1:1'b0;
 
-    assign waControl = (opcode == `OP_ALL_ZERO && funcode == `FUNC_ADD) ? 1'b1: 1'b0;
+    assign waControl = (opcode == `OP_ALL_ZERO && funcode == `FUNC_ADD) ? 1'b1
+                    : (opcode == `OP_ALL_ZERO && funcode == `FUNC_SRAV) ? 1'b1
+                    :1'b0;
     
     assign wdControl = (opcode == `OP_LW) ? 1'b1 : 1'b0;
 
     assign memWrite = (opcode == `OP_SW) ? 1'b1:1'b0;
 
-    assign aluControl = (opcode == `OP_ALL_ZERO && funcode == `FUNC_ADD) ? `ALU_ADD:
-                    (opcode == `OP_ADDI || opcode == `OP_ADDIU || opcode == `OP_LW || opcode == `OP_SW) ? `ALU_ADD 
+    assign aluControl = (opcode == `OP_ALL_ZERO && funcode == `FUNC_ADD) ? `ALU_ADD
+                    :(opcode == `OP_ALL_ZERO && funcode == `FUNC_SRAV) ? `ALU_SRAV
+                    :(opcode == `OP_ADDI || opcode == `OP_ADDIU || opcode == `OP_LW || opcode == `OP_SW) ? `ALU_ADD 
                     :(opcode == `OP_BEQ) ? `ALU_SUB : `ALU_NONE;
     
     assign aluSrc = (opcode == `OP_ADDIU || opcode == `OP_ADDI || opcode == `OP_LUI || opcode == `OP_LW || opcode == `OP_SW )?1'b1:1'b0;

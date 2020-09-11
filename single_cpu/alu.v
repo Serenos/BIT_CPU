@@ -33,6 +33,7 @@ module alu(
 );
     assign aluOut = (aluControl == `ALU_ADD) ? (srcA + srcB) 
                 :(aluControl == `ALU_SUB) ? (srcA - srcB) 
+                :(aluControl == `ALU_SRAV) ? (srcB >> srcA[4:0])
                 :(aluControl == `ALU_NONE) ? srcB : `ZEROWORD;
                 
     assign equal = (aluOut == 0) ? 1'b1 : 1'b0;

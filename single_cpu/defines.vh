@@ -70,6 +70,7 @@
 // opcode over
 `define FUNC_ADD 6'b100000
 `define FUNC_ADDU 6'b100001
+`define FUNC_SRAV 6'b000111
 
 // ALU code
 `define ALU_ADD 5'b00010
@@ -77,4 +78,5 @@
 `define ALU_SUB 5'b00110
 `define ALU_OR 5'b00001
 `define ALU_NONE 5'b00000
+`define ALU_SRAV 5'b00011
 // ALU code over

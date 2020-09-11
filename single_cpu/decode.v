@@ -29,7 +29,9 @@ module decode(
     output [`IMI_SIZE] im,
 
     output [`OP_SIZE] opcode,
-    output [`OP_SIZE] funcode
+    output [`OP_SIZE] funcode,
+    
+    output [`INSTRSIZE] instrIndex
 
 );
 
@@ -39,5 +41,6 @@ module decode(
     assign im = insData[15:0];
     assign opcode = insData[31:26];
     assign funcode = insData[5:0];
+    assign instrIndex = insData[25:0];
 
 endmodule
