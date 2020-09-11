@@ -4,3 +4,4 @@
 + Vivado2019.2 https://china.xlinx.com/support/download.hrml
 ## Resource
 + https://github.com/hongshen424/single_cpu_design
++ https://github.com/bit-mips/bitmips_experiments
