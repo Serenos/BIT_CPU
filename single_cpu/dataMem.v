@@ -6,7 +6,7 @@
 // 
 // Create Date: 09/08/2020 01:21:06 PM
 // Design Name: 
-// Module Name: insMem
+// Module Name: dataMem
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 

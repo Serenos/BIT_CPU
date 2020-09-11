@@ -5,8 +5,8 @@
 // Engineer: 
 // 
 // Create Date: 09/08/2020 01:21:06 PM
-// Design Name: 
-// Module Name: insMem
+// Design Name: Lixiang
+// Module Name: pc
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 

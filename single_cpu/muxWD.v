@@ -6,7 +6,7 @@
 // 
 // Create Date: 09/08/2020 01:21:06 PM
 // Design Name: 
-// Module Name: controlUnit
+// Module Name: muxWD
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
