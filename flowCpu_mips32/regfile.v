@@ -56,12 +56,25 @@ module regfile(
         end else if((raddr1 == waddr) && (we == `WRITEABLE) && (re1 == `ReadEnable)) begin
             radata1 <= wdata;
         end else if(re1 == `ReadEnable) begin
-            
+            rdata1 <= regs[raddr1];
+        end else begin
+            rdata1 <= `ZEROWORD;
         end
-
-        end
-
-
     end
+
+    always @(*) begin
+        if(rst == `RESTABLE) begin
+            rdata2 <= `ZEROWORD;
+        end else if(raddr2 == `RegNumLog2'h0) begin
+            rdata2 <= `ZEROWORD;
+        end else if((raddr2 == waddr) && (we == `WRITEABLE) && (re2 == `ReadEnable)) begin
+            radata2 <= wdata;
+        end else if(re2 == `ReadEnable) begin
+            rdata2 <= regs[raddr2];
+        end else begin
+            rdata2 <= `ZEROWORD;
+        end
+    end
+
 
 endmodule

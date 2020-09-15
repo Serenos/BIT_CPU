@@ -8,6 +8,10 @@
 `define RESETUNABLE 1'b0
 `define ChipEnable 1'b1
 `define ChipDisable 1'b0
+`define AluOpBus 7:0
+`define AluSeBus 2:0
+`define InstValid 1'b0
+`define InstInvalid 1'b1
 
 `define ZEROWORD 32'h00000000
 
@@ -38,6 +42,12 @@
 `define EXE_OR_OP 8'b00100101
 `define EXE_NOP_OP 8'b00000000
 
+
+//AluSel
+`define EXE_RES_LOGIC 3'b001
+`define EXE_RES_NOP 3'b000
+
+
 /****** instruction ROM related ******/
 `define InstAddrBus 31:0
 `define InstBus     31:0
@@ -50,6 +60,7 @@
 `define RegWidth 32
 `define RegNum 32
 `define RegNumLog2 5
+`define NOPRegAddr 5'b00000
 
 
 
