@@ -30,12 +30,12 @@ module id_ex(
     input wire[`RegAddrBus] id_wd,
     input wire id_wreg,
 
-    output wire[`AluOpBus] ex_aluop,
-    output wire[`AluSelBus] ex_alusel,
-    output wire[`RegBus] ex_reg1,
-    output wire[`RegBus] ex_reg2,
-    output wire[`RegAddrBus] ex_wd,
-    output wire ex_wreg
+    output reg[`AluOpBus] ex_aluop,
+    output reg[`AluSelBus] ex_alusel,
+    output reg[`RegBus] ex_reg1,
+    output reg[`RegBus] ex_reg2,
+    output reg[`RegAddrBus] ex_wd,
+    output reg ex_wreg
 
 );
     always @(posedge clk) begin

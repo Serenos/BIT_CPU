@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+`include "defines.vh"
 //////////////////////////////////////////////////////////////////////////////////
 // Company: BIT
 // Engineer: Lixiang
@@ -20,8 +22,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module id(
-    input rst;
-    input clk;
+    input rst,
+    input clk,
 
     input wire[`InstAddrBus]    pc_i,
     input wire[`InstBus]        inst_i,
@@ -51,9 +53,11 @@ module id(
     reg instValid;
 
     always @(*) begin
-        if(rst == `RESTABLE) begin
+        if(rst == `RESETABLE) begin
             aluop_o  <= `EXE_NOP_OP;
             alusel_o <= `EXE_RES_NOP;
+            wd_o <= `NOPRegAddr;
+            wreg_o <= `WRITEABLE;
             en_reg_read1_o <= 1'b0;
             en_reg_read2_o <= 1'b0;
             reg_addr1_o <= `NOPRegAddr;
@@ -62,7 +66,17 @@ module id(
             instValid <= `InstValid;
         end else begin
             
-
+            aluop_o  <= `EXE_NOP_OP;
+            alusel_o <= `EXE_RES_NOP;
+            wd_o <= `NOPRegAddr;
+            wreg_o <= `WRITEABLE;
+            en_reg_read1_o <= 1'b0;
+            en_reg_read2_o <= 1'b0;
+            reg_addr1_o <= `NOPRegAddr;
+            reg_addr2_o <= `NOPRegAddr;
+            imm <= 32'h0;
+            instValid <= `InstValid;
+            
              case(op)
                 `EXE_ORI: begin
                     wreg_o <= `WRITEABLE;
@@ -70,7 +84,7 @@ module id(
                     alusel_o <= `EXE_RES_LOGIC;
                     en_reg_read1_o <= 1'b1;
                     en_reg_read2_o <= 1'b0;
-                    imm <= (16'h0, inst_i[15:0]);
+                    imm <= {16'h0, inst_i[15:0]};
                     wd_o <= inst_i[20:16];
                     instValid <= `InstValid;
                 end

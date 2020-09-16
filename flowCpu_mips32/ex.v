@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+`include "defines.vh"
 //////////////////////////////////////////////////////////////////////////////////
 // Company: BIT
 // Engineer: Lixiang
@@ -39,7 +41,7 @@ module ex(
         if(rst == `RESETABLE) begin
             logicout <= `ZEROWORD;
         end else begin
-            case(aliop_i)
+            case(aluop_i)
                 `EXE_OR_OP:begin
                     logicout <= reg1_i | reg2_i;
                 end

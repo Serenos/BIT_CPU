@@ -26,10 +26,10 @@ module if_id(
     input rst,
 
     input wire[`InstAddrBus] if_pc,
-    input wire[`InstAddr]    if_inst,
+    input wire[`InstBus]    if_inst,
 
     output reg[`InstAddrBus] id_pc,
-    output reg[`InstAddr]    id_inst
+    output reg[`InstBus]    id_inst
 
 );
 

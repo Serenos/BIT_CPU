@@ -1,5 +1,6 @@
 
-
+`define READENABLE 1'b1
+`define READDISABLE 1'b0
 `define WRITEABLE 1'b1
 `define UNWRITEABLE 1'b0
 `define EXTENDSIGNAL_SIZE 1:0
@@ -9,7 +10,7 @@
 `define ChipEnable 1'b1
 `define ChipDisable 1'b0
 `define AluOpBus 7:0
-`define AluSeBus 2:0
+`define AluSelBus 2:0
 `define InstValid 1'b0
 `define InstInvalid 1'b1
 
@@ -21,8 +22,8 @@
 `define ALUCONTROL_SIZE 4:0
 `define INSTR_INDEX 25:0
 
-`define INSTR_MEM_NUM 131071
-`define DATA_MEM_NUM 2048
+`define INSTR_MEM_NUM 16
+`define DATA_MEM_NUM 16
 
 `define INSTRSIZE 31:0
 `define PCSIZE 31:0

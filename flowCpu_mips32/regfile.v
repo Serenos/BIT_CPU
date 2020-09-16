@@ -31,17 +31,17 @@ module regfile(
 
     input wire              re1,
     input wire[`RegAddrBus] raddr1,
-    output wire[`RegBus]    rdata1,
+    output reg[`RegBus]    rdata1,
 
     input wire              re2,
     input wire[`RegAddrBus] raddr2,
-    output wire[`RegBus]    rdata2,
+    output reg[`RegBus]    rdata2
 
 );
     reg[`RegBus] regs[0:`RegNum-1];
 
     always @ (posedge clk) begin
-        if(rst ==`RESTUNABLE) begin
+        if(rst ==`RESETUNABLE) begin
             if(we == `WRITEABLE && waddr != `InstMemNumLog2'h0) begin
                 regs[waddr] <= wdata;
             end
@@ -49,13 +49,13 @@ module regfile(
     end
 
     always @(*) begin
-        if(rst == `RESTABLE) begin
+        if(rst == `RESETABLE) begin
             rdata1 <= `ZEROWORD;
         end else if(raddr1 == `RegNumLog2'h0) begin
             rdata1 <= `ZEROWORD;
-        end else if((raddr1 == waddr) && (we == `WRITEABLE) && (re1 == `ReadEnable)) begin
-            radata1 <= wdata;
-        end else if(re1 == `ReadEnable) begin
+        end else if((raddr1 == waddr) && (we == `WRITEABLE) && (re1 == `READENABLE)) begin
+            rdata1 <= wdata;
+        end else if(re1 == `READENABLE) begin
             rdata1 <= regs[raddr1];
         end else begin
             rdata1 <= `ZEROWORD;
@@ -63,13 +63,13 @@ module regfile(
     end
 
     always @(*) begin
-        if(rst == `RESTABLE) begin
+        if(rst == `RESETABLE) begin
             rdata2 <= `ZEROWORD;
         end else if(raddr2 == `RegNumLog2'h0) begin
             rdata2 <= `ZEROWORD;
-        end else if((raddr2 == waddr) && (we == `WRITEABLE) && (re2 == `ReadEnable)) begin
-            radata2 <= wdata;
-        end else if(re2 == `ReadEnable) begin
+        end else if((raddr2 == waddr) && (we == `WRITEABLE) && (re2 == `READENABLE)) begin
+            rdata2 <= wdata;
+        end else if(re2 == `READENABLE) begin
             rdata2 <= regs[raddr2];
         end else begin
             rdata2 <= `ZEROWORD;

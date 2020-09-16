@@ -25,15 +25,15 @@ module testbench(
     reg rst;
 
     initial begin
+        rst=1'b1;
         clk = 1'b0;
-        #10 clk = ~clk;
+        #20 rst=1'b1;
+        #20 rst=1'b0;
+        
+        $display("running...");
     end
 
-    initial begin
-        rst = `RESETABLE;
-        #200 rst = `RESETUNABLE;
-        #1000 $stop
-    end
+    always #10 clk=~clk;
 
     mips_sopc mips_sopc0(
         .clk(clk),

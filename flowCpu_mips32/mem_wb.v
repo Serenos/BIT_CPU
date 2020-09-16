@@ -1,4 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////////
+`timescale 1ns / 1ps
+`include "defines.vh"//////////////////////////////////////////////////////////////////////////////////
 // Company: BIT
 // Engineer: Lixiang
 // 
@@ -25,9 +26,9 @@ module mem_wb(
     input wire mem_wreg,
     input wire[`RegBus] mem_wdata,
 
-    output wire[`RegAddrBus] wb_wd,
-    output wire wb_wreg,
-    output wire[`RegBus] wb_wdata,
+    output reg[`RegAddrBus] wb_wd,
+    output reg wb_wreg,
+    output reg[`RegBus] wb_wdata
 );
     always @(posedge clk) begin
         if(rst == `RESETABLE) begin

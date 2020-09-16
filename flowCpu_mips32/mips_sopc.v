@@ -22,7 +22,7 @@
 
 module mips_sopc(
     input wire clk,
-    input wire rst,
+    input wire rst
 );
     wire[`InstAddrBus] inst_addr;
     wire[`InstBus] inst;
@@ -36,7 +36,7 @@ module mips_sopc(
         .rom_ce_o(rom_ce)
     );
 
-    instMem insMem0(
+    insMem insMem0(
         .ce(rom_ce),
         .addr(inst_addr),
         .inst(inst)

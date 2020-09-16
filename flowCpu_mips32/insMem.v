@@ -31,7 +31,7 @@ module insMem(
 
     reg [`InstBus] inst_mem[0:`InstMemNum-1];
     initial begin
-        $readmemh("/home/lixiang/Desktop/vivado_ws/single_cpu/rom.txt", inst_mem);
+        $readmemh("/home/lixiang/Desktop/BIT_CPU/flowCpu_mips32/InstRom.data", inst_mem);
        
     end
     
@@ -39,7 +39,7 @@ module insMem(
         if(ce == `ChipDisable) begin
             inst <= `ZEROWORD;
         end else begin
-            inst <= inst_mem[addr];
+            inst <= inst_mem[addr>>2];
         end
     end
 

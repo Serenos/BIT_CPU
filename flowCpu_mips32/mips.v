@@ -24,9 +24,9 @@
 module mips(
     input clk,
     input rst,
-    input wire[`RegBus] rom_data_i,
+    input wire[`InstBus] rom_data_i,
 
-    output wire[`RegAddrBus] rom_addr_o,
+    output wire[`InstAddrBus] rom_addr_o,
     output wire rom_ce_o
 );
 
@@ -41,7 +41,7 @@ module mips(
     wire[`AluSelBus] id_alusel_o;
     wire[`RegBus] id_reg1_o;
     wire[`RegBus] id_reg2_o;
-    wire id)wreg_o;
+    wire id_wreg_o;
     wire[`RegAddrBus] id_wd_o;
 
 //id_ex <-> ex
@@ -108,13 +108,17 @@ module mips(
         .clk(clk),
         .pc_i(id_pc_i),
         .inst_i(id_inst_i),
-        .reg_data1_i(reg1_read),
-        .reg_data2_i(reg2_read),
-
+        .reg_data1_i(reg1_data),
+        .reg_data2_i(reg2_data),
+        .en_reg_read1_o(reg1_read),
+        .reg_addr1_o(reg1_addr),
+        .reg_addr2_o(reg2_addr),
+        .en_reg_read2_o(reg2_read),
+        
         .aluop_o(id_aluop_o),
         .alusel_o(id_alusel_o),
         .reg1_o(id_reg1_o),
-        .reg2_0(id_reg2_o),
+        .reg2_o(id_reg2_o),
         .wd_o(id_wd_o),
         .wreg_o(id_wreg_o)
 
@@ -129,12 +133,9 @@ module mips(
         .re1(reg1_read),
         .raddr1(reg1_addr),
         .rdata1(reg1_data),
-        .re1(reg1_read),
-        .raddr1(reg1_addr),
-        .rdata1(reg1_data),
         .re2(reg2_read),
         .raddr2(reg2_addr),
-        .rdata(reg2_data)
+        .rdata2(reg2_data)
 
     );
 
@@ -159,7 +160,7 @@ module mips(
     ex ex0(
         .rst(rst),
         .aluop_i(ex_aluop_i),
-        .aluse1_i(ex_aluop_i),
+        .alusel_i(ex_aluop_i),
         .reg1_i(ex_reg1_i),
         .reg2_i(ex_reg2_i),
         .wd_i(ex_wd_i),
@@ -197,11 +198,11 @@ module mips(
         .clk(clk),
         .rst(rst),
         .mem_wd(mem_wd_o),
-        .mem_wreg(mem_wd_o),
+        .mem_wreg(mem_wreg_o),
         .mem_wdata(mem_wdata_o),
         .wb_wd(wb_wd_i),
         .wb_wreg(wb_wreg_i),
-        .wb_data(wb_wdata_i)
+        .wb_wdata(wb_wdata_i)
     );
 
 endmodule
