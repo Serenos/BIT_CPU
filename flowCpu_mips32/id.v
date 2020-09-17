@@ -41,7 +41,17 @@ module id(
     output reg[`RegBus]         reg1_o,
     output reg[`RegBus]         reg2_o,
     output reg[`RegAddrBus]     wd_o,
-    output reg                  wreg_o
+    output reg                  wreg_o,
+
+    //处于执行阶段指令的运算结果
+    input wire ex_wreg_i,
+    input wire[`RegBus] ex_wdata_i,
+    input wire[`RegAddrBus] ex_wd_i,
+    //处于访存阶段指令的晕眩结果
+    input wire mem_wreg_i,
+    input wire[`RegBus] mem_wdata_i,
+    input wire[`RegAddrBus] mem_wd_i,  
+
 
 );
     wire[5:0] op = inst_i[31:26];
@@ -57,7 +67,7 @@ module id(
             aluop_o  <= `EXE_NOP_OP;
             alusel_o <= `EXE_RES_NOP;
             wd_o <= `NOPRegAddr;
-            wreg_o <= `WRITEABLE;
+            wreg_o <= `UNWRITEABLE;
             en_reg_read1_o <= 1'b0;
             en_reg_read2_o <= 1'b0;
             reg_addr1_o <= `NOPRegAddr;
@@ -68,12 +78,12 @@ module id(
             
             aluop_o  <= `EXE_NOP_OP;
             alusel_o <= `EXE_RES_NOP;
-            wd_o <= `NOPRegAddr;
-            wreg_o <= `WRITEABLE;
+            wd_o <= inst_i[15:11];
+            wreg_o <= `UNWRITEABLE;
             en_reg_read1_o <= 1'b0;
             en_reg_read2_o <= 1'b0;
-            reg_addr1_o <= `NOPRegAddr;
-            reg_addr2_o <= `NOPRegAddr;
+            reg_addr1_o <= inst_i[25:21];
+            reg_addr2_o <= inst_i[20:16];
             imm <= 32'h0;
             instValid <= `InstValid;
             
@@ -97,6 +107,12 @@ module id(
     always @(*) begin
         if(rst == `RESETABLE) begin
             reg1_o <= `ZEROWORD;
+        //执行阶段数据前推
+        end else if(en_reg_read1_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg1_addr_o) begin
+            reg1_o <= ex_wdata_i;
+        //访存阶段数据前推
+        end else if(en_reg_read1_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg1_addr_o) begin
+            reg1_o <= mem_wdata_i;
         end else if(en_reg_read1_o == 1'b1) begin
             reg1_o <= reg_data1_i;
         end else if(en_reg_read1_o == 1'b0) begin
@@ -109,6 +125,12 @@ module id(
     always @(*) begin
         if(rst == `RESETABLE) begin
             reg2_o <= `ZEROWORD;
+        //执行阶段数据前推
+        end else if(en_reg_read2_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg2_addr_o) begin
+            reg2_o <= ex_wdata_i;
+        //访存阶段数据前推
+        end else if(en_reg_read2_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg2_addr_o) begin
+            reg2_o <= mem_wdata_i;
         end else if(en_reg_read2_o == 1'b1) begin
             reg2_o <= reg_data1_i;
         end else if(en_reg_read2_o == 1'b0) begin
