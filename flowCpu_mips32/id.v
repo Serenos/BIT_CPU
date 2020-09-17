@@ -50,7 +50,7 @@ module id(
     //处于访存阶段指令的晕眩结果
     input wire mem_wreg_i,
     input wire[`RegBus] mem_wdata_i,
-    input wire[`RegAddrBus] mem_wd_i,  
+    input wire[`RegAddrBus] mem_wd_i
 
 
 );
@@ -88,6 +88,40 @@ module id(
             instValid <= `InstValid;
             
              case(op)
+                `EXE_SPECIAL_INST: begin
+                    case(sa)
+                        5'b00000: begin
+                            case(funcode)
+                                `EXE_OR: begin
+                                    
+                                end
+                                `EXE_AND: begin
+                                    
+                                end
+                                `EXE_XOR: begin
+                                    
+                                end
+                                `EXE_NOR: begin
+                                    
+                                end
+                                `EXE_SLLV:begin
+                                    
+                                end
+                                `EXE_SRLV: begin
+                                    
+                                end
+                                `EXE_SRAV: begin
+                                    
+                                end
+                                default: begin
+                                end
+                            endcase
+                        end
+                        default: begin
+                        end
+                    endcase  
+                end
+
                 `EXE_ORI: begin
                     wreg_o <= `WRITEABLE;
                     aluop_o <= `EXE_OR_OP;
@@ -98,9 +132,71 @@ module id(
                     wd_o <= inst_i[20:16];
                     instValid <= `InstValid;
                 end
+                `EXE_ANDI: begin
+                    wreg_o <= `WRITEABLE;
+                    aluop_o <= `EXE_AND_OP;
+                    alusel_o <= `EXE_RES_LOGIC;
+                    en_reg_read1_o <= 1'b1;
+                    en_reg_read2_o <= 1'b0;
+                    imm <= {16'h0, inst_i[15:0]};
+                    wd_o <= inst_i[20:16];
+                    instValid <= `InstValid;
+                end
+                `EXE_XORI: begin
+                    wreg_o <= `WRITEABLE;
+                    aluop_o <= `EXE_XOR_OP;
+                    alusel_o <= `EXE_RES_LOGIC;
+                    en_reg_read1_o <= 1'b1;
+                    en_reg_read2_o <= 1'b0;
+                    imm <= {16'h0, inst_i[15:0]};
+                    wd_o <= inst_i[20:16];
+                    instValid <= `InstValid;
+                end
+                `EXE_LUI: begin
+                    wreg_o <= `WRITEABLE;
+                    aluop_o <= `EXE_OR_OP;
+                    alusel_o <= `EXE_RES_LOGIC;
+                    en_reg_read1_o <= 1'b1;
+                    en_reg_read2_o <= 1'b0;
+                    imm <= { inst_i[15:0], 16'h0};
+                    wd_o <= inst_i[20:16];
+                    instValid <= `InstValid;
+                end                                                
                 default: begin
                 end
-             endcase 
+             endcase //case op
+            if(inst_i[31:21] == 11'b00000000000) begin
+                if(funcode == `EXE_SLL) begin
+                    wreg_o <= `WRITEABLE;
+                    aluop_o <= `EXE__SLL_OP;
+                    alusel_o <= `EXE_RES_SHIFT;
+                    en_reg_read1_o <= 1'b0;
+                    en_reg_read2_o <= 1'b1;
+                    imm[4:0] <= inst_i[10:6];
+                    wd_o <= inst_i[15:11];
+                    instValid <= `InstValid;
+
+                end else if(funcode == `EXE_SRL) begin
+                    wreg_o <= `WRITEABLE;
+                    aluop_o <= `EXE__SRL_OP;
+                    alusel_o <= `EXE_RES_SHIFT;
+                    en_reg_read1_o <= 1'b0;
+                    en_reg_read2_o <= 1'b1;
+                    imm[4:0] <= inst_i[10:6];
+                    wd_o <= inst_i[15:11];
+                    instValid <= `InstValid;
+                end else if(funcode == `EXE_SRA) begin
+                    wreg_o <= `WRITEABLE;
+                    aluop_o <= `EXE__SRA_OP;
+                    alusel_o <= `EXE_RES_SHIFT;
+                    en_reg_read1_o <= 1'b0;
+                    en_reg_read2_o <= 1'b1;
+                    imm[4:0] <= inst_i[10:6];
+                    wd_o <= inst_i[15:11];
+                    instValid <= `InstValid;
+                end
+
+            end
         end
     end
 
@@ -108,10 +204,10 @@ module id(
         if(rst == `RESETABLE) begin
             reg1_o <= `ZEROWORD;
         //执行阶段数据前推
-        end else if(en_reg_read1_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg1_addr_o) begin
+        end else if(en_reg_read1_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg_addr1_o) begin
             reg1_o <= ex_wdata_i;
         //访存阶段数据前推
-        end else if(en_reg_read1_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg1_addr_o) begin
+        end else if(en_reg_read1_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg_addr1_o) begin
             reg1_o <= mem_wdata_i;
         end else if(en_reg_read1_o == 1'b1) begin
             reg1_o <= reg_data1_i;
@@ -126,10 +222,10 @@ module id(
         if(rst == `RESETABLE) begin
             reg2_o <= `ZEROWORD;
         //执行阶段数据前推
-        end else if(en_reg_read2_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg2_addr_o) begin
+        end else if(en_reg_read2_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg_addr2_o) begin
             reg2_o <= ex_wdata_i;
         //访存阶段数据前推
-        end else if(en_reg_read2_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg2_addr_o) begin
+        end else if(en_reg_read2_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg_addr2_o) begin
             reg2_o <= mem_wdata_i;
         end else if(en_reg_read2_o == 1'b1) begin
             reg2_o <= reg_data1_i;

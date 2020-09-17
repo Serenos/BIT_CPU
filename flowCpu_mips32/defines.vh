@@ -36,8 +36,24 @@
 `define ALUCONTROL_SIZE 4:0
 
 /****** instruction related ******/
+`define EXE_AND 6'b100100//funcode
+`define EXE_OR  6'b100101//funcode
+`define EXE_XOR 6'b100110//funcode
+`define EXE_NOR 6'b100111//funcode
+`define EXE_ANDI 6'b001100
 `define EXE_ORI 6'b001101
+`define EXE_XORI 6'b001110
+`define EXE_LUI 6'b001111
 `define EXE_NOP 6'b000000
+
+`define EXE_SLL  6'b000000//funcode
+`define EXE_SLLV 6'b000100//funcode
+`define EXE_SRL  6'b000010//funcode
+`define EXE_SRLV 6'b000110//funcode
+`define EXE_SRA  6'b000011//funcode
+`define EXE_SRAV 6'b000111//funcode
+
+`define EXE_SPECIAL_INST 6'b000000//funcode
 
 //AluOp 
 `define EXE_OR_OP 8'b00100101
@@ -46,6 +62,7 @@
 
 //AluSel
 `define EXE_RES_LOGIC 3'b001
+`define EXE_RES_SHIFT 3'b000
 `define EXE_RES_NOP 3'b000
 
 

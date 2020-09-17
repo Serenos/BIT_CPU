@@ -120,7 +120,7 @@ module mips(
         .reg1_o(id_reg1_o),
         .reg2_o(id_reg2_o),
         .wd_o(id_wd_o),
-        .wreg_o(id_wreg_o)，
+        .wreg_o(id_wreg_o),
 
         .ex_wreg_i(ex_wreg_o),
         .ex_wdata_i(ex_wdata_o),
