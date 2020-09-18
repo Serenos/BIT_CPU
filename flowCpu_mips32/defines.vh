@@ -53,6 +53,13 @@
 `define EXE_SRA  6'b000011//funcode
 `define EXE_SRAV 6'b000111//funcode
 
+`define EXE_MOVN
+`define EXE_MOVZ
+`define EXE_MFHI
+`define EXE_MTHI
+`define EXE_MFLO
+`define EXE_MTLO
+
 `define EXE_SPECIAL_INST 6'b000000//funcode
 
 //AluOp 
@@ -62,7 +69,8 @@
 
 //AluSel
 `define EXE_RES_LOGIC 3'b001
-`define EXE_RES_SHIFT 3'b000
+`define EXE_RES_SHIFT 3'b010
+`define EXE_RES_MOVE 3'b011
 `define EXE_RES_NOP 3'b000
 
 

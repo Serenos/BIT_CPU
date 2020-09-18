@@ -161,7 +161,57 @@ module id(
                     imm <= { inst_i[15:0], 16'h0};
                     wd_o <= inst_i[20:16];
                     instValid <= `InstValid;
-                end                                                
+                end       
+                 `EXE_MOVN: begin
+                    aluop_o <= `EXE_MOVN_OP;
+                    alusel_o <= `EXE_RES_MOVE;
+                    en_reg_read1_o <= 1'b1;
+                    en_reg_read2_o <= 1'b0;
+                    if(reg2_o != `ZEROWORD) begin
+                        wreg_o <= `WRITEABLE;
+                    end else begin
+                        wreg_o <= `UNWRITEABLE;
+                    end
+                    instValid <= `InstValid;               
+                 `EXE_MOVZ: begin
+                    aluop_o <= `EXE_MOVZ_OP;
+                    alusel_o <= `EXE_RES_MOVE;
+                    en_reg_read1_o <= 1'b1;
+                    en_reg_read2_o <= 1'b0;
+                    if(reg2_o == `ZEROWORD) begin
+                        wreg_o <= `WRITEABLE;
+                    end else begin
+                        wreg_o <= `UNWRITEABLE;
+                    end
+                    instValid <= `InstValid;  
+                `EXE_MFHI: begin
+                    aluop_o <= `EXE_MFHI_OP;
+                    alusel_o <= `EXE_RES_MOVE;
+                    en_reg_read1_o <= 1'b0;
+                    en_reg_read2_o <= 1'b0;
+                    wreg_o <= `WRITEABLE;
+                    instValid <= `InstValid;  
+                `EXE_MTHI: begin
+                    aluop_o <= `EXE_MTHI_OP;
+                    //alusel_o <= `EXE_RES_MOVE;
+                    en_reg_read1_o <= 1'b1;
+                    en_reg_read2_o <= 1'b0;
+                    wreg_o <= `UNWRITEABLE;
+                    instValid <= `InstValid;  
+                `EXE_MFLO: begin
+                    aluop_o <= `EXE_MFLO_OP;
+                    alusel_o <= `EXE_RES_MOVE;
+                    en_reg_read1_o <= 1'b0;
+                    en_reg_read2_o <= 1'b0;
+                    wreg_o <= `WRITEABLE;
+                    instValid <= `InstValid; 
+                `EXE_MTLO: begin
+                    aluop_o <= `EXE_MTLO_OP;
+                    //alusel_o <= `EXE_RES_MOVE;
+                    en_reg_read1_o <= 1'b1;
+                    en_reg_read2_o <= 1'b0;
+                    wreg_o <= `UNWRITEABLE;
+                    instValid <= `InstValid; 
                 default: begin
                 end
              endcase //case op
@@ -187,7 +237,7 @@ module id(
                     instValid <= `InstValid;
                 end else if(funcode == `EXE_SRA) begin
                     wreg_o <= `WRITEABLE;
-                    aluop_o <= `EXE__SRA_OP;
+                    aluop_o <= `EXE_SRA_OP;
                     alusel_o <= `EXE_RES_SHIFT;
                     en_reg_read1_o <= 1'b0;
                     en_reg_read2_o <= 1'b1;

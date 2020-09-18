@@ -92,6 +92,9 @@ module ex(
             `EXE_RES_LOGIC:begin
                 wdata_o <= logicout;
             end
+            `EXE_RES_SHIFT:begin
+                wdata_o <= shiftres;
+            end
             default:begin
                 wdata_o <= logicout;
             end
