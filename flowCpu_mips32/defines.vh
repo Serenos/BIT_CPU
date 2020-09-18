@@ -53,12 +53,12 @@
 `define EXE_SRA  6'b000011//funcode
 `define EXE_SRAV 6'b000111//funcode
 
-`define EXE_MOVN
-`define EXE_MOVZ
-`define EXE_MFHI
-`define EXE_MTHI
-`define EXE_MFLO
-`define EXE_MTLO
+`define EXE_MOVN 6'b001010
+`define EXE_MOVZ 6'b001011
+`define EXE_MFHI 6'b010000
+`define EXE_MTHI 6'b010001
+`define EXE_MFLO 6'b010010
+`define EXE_MTLO 6'b010011
 
 `define EXE_SPECIAL_INST 6'b000000//funcode
 

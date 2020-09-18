@@ -58,6 +58,10 @@ module mips(
     wire[`RegAddrBus] ex_wd_o;
     wire[`RegBus] ex_wdata_o;
 
+    wire ex_enhilo_o;
+    wire[`RegBus] ex_hi_o;
+    wire[`RegBus] ex_lo_o;
+
 //ex_mem <-> mem
 
     wire mem_wreg_i;
@@ -70,7 +74,7 @@ module mips(
     wire[`RegAddrBus] mem_wd_o;
     wire[`RegBus] mem_wdata_o;
 
-//mem_wb <-> wb
+//mem_wb <-> hilo
 
     wire wb_wreg_i;
     wire[`RegAddrBus] wb_wd_i;
@@ -175,6 +179,7 @@ module mips(
         .wd_o(ex_wd_o),
         .wreg_o(ex_wreg_o),
         .wdata_o(ex_wdata_o)
+        
     );
 
     ex_mem ex_mem0(
@@ -210,6 +215,16 @@ module mips(
         .wb_wd(wb_wd_i),
         .wb_wreg(wb_wreg_i),
         .wb_wdata(wb_wdata_i)
+    );
+
+    hilo hilo0(
+        .clk(clk),
+        .rst(rst),
+        .we(hilo_we_i),
+        .hi_i(hilo_hi_i),
+        .lo_i(hilo_lo_i),
+        .hi_o(hilo_hi_o),
+        .lo_o(hilo_lo_o)
     );
 
 endmodule

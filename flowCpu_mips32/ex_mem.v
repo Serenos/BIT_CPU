@@ -28,9 +28,18 @@ module ex_mem(
     input wire ex_wreg,
     input wire[`RegBus] ex_wdata,
 
+    input wire ex_enhilo,
+    input wire[`RegBus] ex_hi,
+    input wire[`RegBus] ex_lo,
+
+
     output reg[`RegAddrBus] mem_wd,
     output reg mem_wreg,
-    output reg[`RegBus] mem_wdata
+    output reg[`RegBus] mem_wdata,
+
+    output reg mem_enhilo,
+    output reg[`RegBus] mem_hi,
+    output reg[`RegBus] mem_lo
 
 
 );
@@ -39,10 +48,16 @@ module ex_mem(
             mem_wd <= `NOPRegAddr;
             mem_wreg <= `UNWRITEABLE;
             mem_wdata <= `ZEROWORD;
+            mem_enhilo <= `UNWRITEABLE;
+            mem_hi <= `ZEROWORD;
+            mem_lo <= `ZEROWORD;
         end else begin
             mem_wd <= ex_wd;
             mem_wreg <= ex_wreg;
             mem_wdata <= ex_wdata;
+            mem_enhilo <= ex_enhilo;
+            mem_hi <= ex_hi;
+            mem_lo <= ex_lo;
         end
     end
 endmodule

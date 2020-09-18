@@ -26,19 +26,33 @@ module mem_wb(
     input wire mem_wreg,
     input wire[`RegBus] mem_wdata,
 
+    input wire[`RegBus] mem_hi,
+    input wire[`RegBus] mem_lo,
+    input wire mem_enhilo,
+
     output reg[`RegAddrBus] wb_wd,
     output reg wb_wreg,
-    output reg[`RegBus] wb_wdata
+    output reg[`RegBus] wb_wdata,
+
+    output reg[`RegBus] wb_hi,
+    output reg[`RegBus] wb_lo,
+    output reg wb_enhilo
 );
     always @(posedge clk) begin
         if(rst == `RESETABLE) begin
             wb_wd <= `NOPRegAddr;
             wb_wreg <= `UNWRITEABLE;
             wb_wdata <= `ZEROWORD;
+            wb_hi <= `ZEROWORD;
+            wb_lo <= `ZEROWORD;
+            wb_enhilo <= `UNWRITEABLE;
         end else begin
             wb_wd <= mem_wd;
             wb_wreg <= mem_wreg;
             wb_wdata <= mem_wdata;
+            wb_hi <= mem_hi;
+            wb_lo <= mem_lo;
+            wb_enhilo <= mem_enhilo;
         end
     end
 endmodule
