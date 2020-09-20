@@ -56,6 +56,18 @@ module ex(
     reg[`RegBus] HI;
     reg[`RegBus] LO;
 
+    wire over_sum;
+    wire reg1_eq_reg2;
+    wire reg1_lt_reg2;
+    reg[`RegBus] arithmeticres;
+    wire[`RegBus] reg2_i_mux;//保存第二个操作数的补码
+    wire[`RegBus] reg1_i_not;
+    wire[`RegBus] result_sum;
+    wire[`RegBus] opdata1_mult;
+    wire[`RegBus] opdata2_mult;
+    wire[`DoubleRegBus] hilo_temp;
+    reg[`DoubleRegBus] mulres;
+
     //logic 
     always @(*) begin
         if(rst == `RESETABLE) begin
@@ -148,7 +160,12 @@ module ex(
 
     always @(*) begin
         wd_o <= wd_i;
-        wreg_o <= wreg_i;
+        if(((alu_op_i==`EXE_ADD_OP)||(alu_op_i==`EXE_ADDI_OP)||(alu_op_i==`EXE_SUB_OP))
+                    && (over_sum==1'b1)) begin
+                        wreg_o <= `UNWRITEABLE;
+                    end else begin
+                        wreg_o <= wreg_i;
+                    end
         case(alusel_i)
             `EXE_RES_LOGIC:begin
                 wdata_o <= logicout;
@@ -159,12 +176,20 @@ module ex(
             `EXE_RES_MOVE: begin
                 wdata_o <= moveres;
             end
+            `EXE_RES_ARITHMETIC:begin
+                wdata_o <= arithmeticres;
+            end
+            `EXE_RES_MUL:begin
+                wdata_o <= mulres[31:0];
+            end
             default:begin
-                wdata_o <= logicout;
+                wdata_o <= `ZEROWORD;
             end
         
         endcase
     end
+
+
 
     //for MTHI MTLO
     always @(*) begin
@@ -172,6 +197,10 @@ module ex(
             enhilo_o <= `UNWRITEABLE;
             hi_o <= `ZEROWORD;
             lo_o <= `ZEROWORD;
+        end else if((alu_op_i==`EXE_MULT_OP)||(alu_op_i==`EXE_MULTU)) begin
+            enhilo_o <= `WRITEABLE;
+            hi_o <= mulres[63:32];
+            lo_o <= mulres[31:0];
         end else if(alu_op_i == `EXE_MTHI_OP) begin
             enhilo_o <= `WRITEABLE;
             hi_o <= reg1_i;
@@ -186,5 +215,58 @@ module ex(
             lo_o <= `ZEROWORD;
         end
     end
+
+    /***算术运算***/
+    assign reg2_i_mux = ((aluop_i==`EXE_SUB_OP)||
+                        (aluop_i==`EXE_SUBU_OP)||
+                        (aluop_i==`EXE_SLT_OP))?(~reg2_i)+1:reg2_i;
+    assign result_sum = reg1_i + reg2_i_mux;
+    //判断overflow add,addi,sub
+    assign over_sum = (((!reg1_i[31] && !reg2_i_mux[31]) && result_sum[31])||
+                        ((reg1_i[31] && reg2_i_mux[31]) && !result_sum[31]));
+    assign req1_lt_reg2 = ((alu_op_i==`EXE_SLT_OP))?
+                            ((reg1_i[31] && !reg2_i[31])||(!reg1_i[31] && !reg2_i[31] && result_sum[31])||
+                            (reg1_i[31] && reg2_i[31] && result_sum[31])) : (reg1_i < reg2_i)
+
+    always @(*) begin
+        if(rst == `RESETABLE) begin
+            arithmeticres <= `ZEROWORD;
+        end else begin
+            case(aluop_i)
+                `EXE_SLT_OP, `EXE_SLTU_OP:begin
+                    arithmeticres <= reg1_lt_reg2;
+                end
+                `EXE_ADD_OP, `EXE_ADDI_OP, `EXE_ADDU_OP, `EXE_ADDIU_OP:begin
+                    arithmeticres <= result_sum;
+                end
+                `EXE_CLZ_OP:begin
+                    
+                end
+                `EXE_CLO_OP:begin
+                    
+                end
+            endcase
+        end
+    end     
+
+    /***乘法运算***/
+    assign opdata1_mult = (((alu_op_i==`EXE_MUL_OP)||(alu_op_i==`EXE_MULT_OP))&&(reg1_i[31]==1'b1))?
+                        (~reg1_i+1):reg1_i;               
+
+    assign opdata2_mult = (((alu_op_i==`EXE_MUL_OP)||(alu_op_i==`EXE_MULT_OP))&&(reg2_i[31]==1'b1))?
+                        (~reg2_i+1):reg2_i;    
+
+    assign hilo_temp = opdata1_mult * opdata2_mult;
+
+    always @(*) begin
+        if(rst == `RESETABLE) begin
+            mulres <= {`ZEROWORD, `ZEROWORD};
+        end else if((alu_op_i==`EXE_MUL_OP)||(alu_op_i==`EXE_MULT_OP)) begin
+            if(reg1_i[31] ^ reg2_i[31] ==1'b1) begin
+                mulres <= ~hilo_temp+1;
+            end else begin
+                mulres <= hilo_temp;
+            end
+        end
 
 endmodule

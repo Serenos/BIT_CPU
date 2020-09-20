@@ -178,7 +178,21 @@ module mips(
         .wreg_i(ex_wreg_i),
         .wd_o(ex_wd_o),
         .wreg_o(ex_wreg_o),
-        .wdata_o(ex_wdata_o)
+        .wdata_o(ex_wdata_o),
+
+        .hi_i(hilo_hi_o),
+        .lo_i(hilo_lo_o),
+
+        .wb_hi_i(wb_hi_i),
+        .wb_lo_i(wb_lo_i),
+        .wb_enhilo_i(wb_enhilo_i),
+        .mem_hi_i(mem_hi_o),
+        .mem_lo_i(mem_lo_o),
+        .mem_enhilo_i(mem_enhilo_o),
+
+        .hi_o(ex_hi_o),
+        .lo_o(ex_lo_o),
+        .enhilo_o(ex_enhilo_o)
         
     );
 
@@ -190,7 +204,14 @@ module mips(
         .ex_wdata(ex_wdata_o),
         .mem_wd(mem_wd_i),
         .mem_wreg(mem_wreg_i),
-        .mem_wdata(mem_wdata_i)
+        .mem_wdata(mem_wdata_i),
+
+        .ex_enhilo(ex_enhilo_o),
+        .ex_hi(ex_hi_o),
+        .ex_lo(ex_lo_o),
+        .mem_enhilo(mem_enhilo_i),
+        .mem_hi(mem_hi_i),
+        .mem_lo(mem_lo_i)
     );
 
     mem mem0(
@@ -203,7 +224,14 @@ module mips(
 
         .wd_o(mem_wd_o),
         .wreg_o(mem_wreg_o),
-        .wdata_o(mem_wdata_o)
+        .wdata_o(mem_wdata_o),
+
+        .hi_i(mem_hi_i),
+        .lo_i(mem_lo_i),
+        .enhilo_i(mem_enhilo_i),
+        .hi_o(mem_hi_o),
+        .lo_o(mem_lo_o),
+        .enhilo_o(mem_enhilo_o)
     );
 
     mem_wb mem_wb0(
@@ -214,15 +242,22 @@ module mips(
         .mem_wdata(mem_wdata_o),
         .wb_wd(wb_wd_i),
         .wb_wreg(wb_wreg_i),
-        .wb_wdata(wb_wdata_i)
+        .wb_wdata(wb_wdata_i),
+
+        .mem_hi(mem_hi_o),
+        .mem_lo(mem_lo_o),
+        .mem_enhilo(mem_enhilo_o),
+        .wb_hi(wb_hi_i),
+        .wb_lo(wb_lo_i),
+        .wb_enhilo(wb_enhilo_i)
     );
 
     hilo hilo0(
         .clk(clk),
         .rst(rst),
-        .we(hilo_we_i),
-        .hi_i(hilo_hi_i),
-        .lo_i(hilo_lo_i),
+        .we(wb_enhilo_i),
+        .hi_i(wb_hi_i),
+        .lo_i(wb_lo_i),
         .hi_o(hilo_hi_o),
         .lo_o(hilo_lo_o)
     );
