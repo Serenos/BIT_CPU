@@ -47,7 +47,10 @@ module ex(
 
     output reg[`RegBus] hi_o,
     output reg[`RegBus] lo_o,
-    output reg enhilo_o
+    output reg enhilo_o,
+
+    input wire is_in_delayslot_i,
+    input wire[`RegBus] link_addr_i
 
 );
     reg[`RegBus] logicout;
@@ -181,6 +184,9 @@ module ex(
             end
             `EXE_RES_MUL:begin
                 wdata_o <= mulres[31:0];
+            end
+            `EXE_RES_JUMP_BRANCH:begin
+                wdata_o <= link_addr_i;
             end
             default:begin
                 wdata_o <= `ZEROWORD;

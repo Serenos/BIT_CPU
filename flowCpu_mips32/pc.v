@@ -23,27 +23,16 @@
 module pc(
     input clk,
     input rst,
-    //input [`PCSIZE] PC4,
+    input wire branch_flag_i,
+    input wire[`RegBus] branch_target_addr_i,
 
-    //for beq
-    //input [`DATALENGTH]signImm,
-    //input equal, 
-    //input branch,
-    //for jump
-    //input jump,
-    //input [`INSTR_INDEX] instrIndex,
 
     output reg[`InstAddrBus] pc,
     output reg               ce
     
 );  
 
-    // wire [`PCSIZE] PC_;
 
-    // assign PC_ = (rst == `RESETABLE)?`ZEROWORD
-    //             : (equal==1'b1 && branch==1'b1) ? (PC4 + {signImm[29:0],2'b00}) //pc <= pc+4+(signExt)imm<<2
-    //             : (jump == 1'b1) ? {PC4[31:28], instrIndex, 2'b00} //pc <= (pc+4)[31:28] || instrIndex || 2'b00
-    //             :PC4;
 
     always @(posedge clk) begin
         if(rst == 1'b1) begin
@@ -58,7 +47,11 @@ module pc(
         if(ce == `ChipDisable) begin
             pc <= 32'h00000000;
         end else begin
-            pc <= pc + 4'h4;
+            if(branch_flag_i == `BRANCH) begin
+                
+            end else begin
+                pc <= pc + 4'h4;
+            end    
         end
     end
 

@@ -43,6 +43,11 @@ module mips(
     wire[`RegBus] id_reg2_o;
     wire id_wreg_o;
     wire[`RegAddrBus] id_wd_o;
+    wire id_is_in_delayslot_o;
+    wire[`RegBus] id_link_addr_o;
+    wire id_next_inst_in_delayslot_o;
+    wire[`RegBus] id_branch_target_o;
+    wire id_branch_flag_o;
 
 //id_ex <-> ex
     wire[`AluOpBus] ex_aluop_i;
@@ -51,6 +56,9 @@ module mips(
     wire[`RegBus] ex_reg2_i;
     wire ex_wreg_i;
     wire[`RegAddrBus] ex_wd_i;
+    wire ex_is_in_delayslot_o;
+    wire ex_link_addr_o;
+    wire is_in_delayslot_o;
 
 //ex <-> ex_mem
 
@@ -91,8 +99,12 @@ module mips(
     pc pc0(
         .clk(clk),
         .rst(rst),
+        .branch_flag_i(id_branch_flag_o),
+        .branch_target_addr_i(id_branch_target_o),
+
         .pc(pc),
         .ce(rom_ce_o)
+
     );
 
     assign rom_addr_o = pc;
@@ -131,7 +143,14 @@ module mips(
         .ex_wd_i(ex_wd_o),
         .mem_wreg_i(mem_wreg_o),
         .mem_wdata_i(mem_wdata_o),
-        .mem_wd_i(mem_wd_o)
+        .mem_wd_i(mem_wd_o),
+
+        .is_in_delayslot_i(is_in_delayslot_o),
+        .branch_flag_o(id_branch_flag_o),
+        .branch_target_addr_o(id_branch_target_o),
+        .link_addr_o(id_link_addr_o),
+        .is_in_delayslot_o(id_is_in_delayslot_o),
+        .next_inst_in_delayslot_o(id_next_inst_in_delayslot_o)
 
     );
 
@@ -159,13 +178,20 @@ module mips(
         .id_reg2(id_reg2_o),
         .id_wd(id_wd_o),
         .id_wreg(id_wreg_o),
+        .id_link_addr(id_link_addr_o),
+        .id_is_in_delayslot(id_is_in_delayslot_o),
+        .next_inst_in_delayslot(id_next_inst_in_delayslot_o),
 
         .ex_aluop(ex_aluop_i),
         .ex_alusel(ex_alusel_i),
         .ex_reg1(ex_reg1_i),
         .ex_reg2(ex_reg2_i),
         .ex_wd(ex_wd_i),
-        .ex_wreg(ex_wreg_i)
+        .ex_wreg(ex_wreg_i),
+        .ex_is_in_delayslot(ex_is_in_delayslot_o),
+        .ex_link_addr(ex_link_addr_o),
+        .is_in_delayslot_o(is_in_delayslot_o)
+
     );
 
     ex ex0(
@@ -179,6 +205,8 @@ module mips(
         .wd_o(ex_wd_o),
         .wreg_o(ex_wreg_o),
         .wdata_o(ex_wdata_o),
+        .is_in_delayslot_i(ex_is_in_delayslot_o),
+        .link_addr_i(ex_link_addr_o),
 
         .hi_i(hilo_hi_o),
         .lo_i(hilo_lo_o),

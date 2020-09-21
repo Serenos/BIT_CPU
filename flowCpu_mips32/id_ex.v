@@ -35,7 +35,14 @@ module id_ex(
     output reg[`RegBus] ex_reg1,
     output reg[`RegBus] ex_reg2,
     output reg[`RegAddrBus] ex_wd,
-    output reg ex_wreg
+    output reg ex_wreg,
+
+    input wire[`RegBus] id_link_addr,
+    input wire id_is_in_delayslot,
+    input wire next_inst_in_delayslot_i,
+    output reg[`Regbus] ex_link_addr,
+    output wire ex_is_in_delayslot,
+    output reg is_in_delayslot_o
 
 );
     always @(posedge clk) begin
@@ -46,6 +53,9 @@ module id_ex(
             ex_reg2 <= `ZEROWORD;
             ex_wd <= `NOPRegAddr;
             ex_wreg <= `WRITEABLE;
+            ex_link_addr <= `ZEROWORD;
+            ex_is_in_delayslot <= `NotInDelaySlot;
+            is_in_delayslot_o <= `NotInDelaySlot;
             
         end else begin
             ex_aluop <= id_aluop;
@@ -54,6 +64,9 @@ module id_ex(
             ex_reg2 <= id_reg2;
             ex_wd <= id_wd;
             ex_wreg <= id_wreg;
+            ex_link_addr <= id_link_addr;
+            ex_is_in_delayslot <= id_is_in_delayslot;
+            is_in_delayslot_o <= next_inst_in_delayslot_i;            
         end
 
     end

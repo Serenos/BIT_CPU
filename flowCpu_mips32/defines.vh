@@ -14,6 +14,11 @@
 `define InstValid 1'b0
 `define InstInvalid 1'b1
 
+`define BRANCH 1'b1
+`define NOTBRANCH 1'b0
+`define InDelaySlot 1'b1
+`define NotInDelaySlot 1'b0
+
 `define ZEROWORD 32'h00000000
 
 `define INSTRLENGTH 31:0
@@ -80,9 +85,22 @@
 `define EXE_MULTU 6'b011001
 `define EXE_MUL 6'b000010
 
+`define EXE_J 6'b000010
+`define EXE_JAL 6'b000011
+`define EXE_JALR 6'b001001
+`define EXE_JR 6'b001000
+`define EXE_BEQ 6'b000100
+`define EXE_BGEZ 5'b00001 //[20:15]
+`define EXE_BGEZAL 5'b10001
+`define EXE_BGTZ 6'b000111
+`define EXE_BLEZ 6'b000110
+`define EXE_BLTZ 5'b00000
+`define EXE_BLTZAL 5'b10000
+`define EXE_BNE 6'b000101
+
 
 `define EXE_SPECIAL_INST 6'b000000//funcode
-`define EXE_REGIMM_INST 6'b000000
+`define EXE_REGIMM_INST 6'b000001
 `define EXE_SPECIAL2_INST 6'b011100
 
 //AluOp 
