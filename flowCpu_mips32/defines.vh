@@ -53,6 +53,9 @@
 `define EXE_SRA  6'b000011//funcode
 `define EXE_SRAV 6'b000111//funcode
 
+`define EXE_SYNC 6'b001111//funcode
+`define EXE_PREF 6'b110011
+
 `define EXE_MOVN 6'b001010
 `define EXE_MOVZ 6'b001011
 `define EXE_MFHI 6'b010000
@@ -68,7 +71,7 @@
 `define EXE_ADDU 6'b100001
 `define EXE_SUB 6'b100010
 `define EXE_SUBU 6'b100011
-`define EXE_ADDI 6'001000
+`define EXE_ADDI 6'b001000
 `define EXE_ADDIU 6'b001001
 `define EXE_CLZ 6'b100000
 `define EXE_CLO 6'b100001
@@ -83,8 +86,38 @@
 `define EXE_SPECIAL2_INST 6'b011100
 
 //AluOp 
-`define EXE_OR_OP 8'b00100101
+
 `define EXE_NOP_OP 8'b00000000
+`define EXE_AND_OP 8'b00000001
+`define EXE_OR_OP  8'b00000010
+`define EXE_NOR_OP 8'b00000011
+`define EXE_XOR_OP 8'b00000100
+
+`define EXE_SLL_OP 8'b00000101
+`define EXE_SRL_OP 8'b00000110
+`define EXE_SRA_OP 8'b00000111
+
+`define EXE_MFHI_OP 8'b00001000
+`define EXE_MFLO_OP 8'b00001001
+`define EXE_MTHI_OP 8'b00001010
+`define EXE_MTLO_OP 8'b00001011
+`define EXE_MOVZ_OP 8'b00001100
+`define EXE_MOVN_OP 8'b00001101
+
+`define EXE_ADD_OP 8'b00010000
+`define EXE_ADDU_OP 8'b00010001
+`define EXE_ADDI_OP 8'b00010010
+`define EXE_ADDIU_OP 8'b00010011
+`define EXE_SUB_OP 8'b00010100
+`define EXE_SUBU_OP 8'b00010101
+`define EXE_SLT_OP 8'b00010110
+`define EXE_SLTU_OP 8'b00010111
+`define EXE_CLZ_OP 8'b00011000
+`define EXE_CLO_OP 8'b00011001
+`define EXE_MUL_OP 8'b00011010
+`define EXE_MULT_OP 8'b00011011
+`define EXE_MULTU_OP 8'b00011100
+
 
 
 //AluSel
@@ -92,6 +125,7 @@
 `define EXE_RES_SHIFT 3'b010
 `define EXE_RES_MOVE 3'b011
 `define EXE_RES_ARITHMETIC 3'b100
+`define EXE_RES_MUL 3'b101
 `define EXE_RES_NOP 3'b000
 
 

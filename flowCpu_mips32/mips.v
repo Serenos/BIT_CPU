@@ -171,7 +171,7 @@ module mips(
     ex ex0(
         .rst(rst),
         .aluop_i(ex_aluop_i),
-        .alusel_i(ex_aluop_i),
+        .alusel_i(ex_alusel_i),
         .reg1_i(ex_reg1_i),
         .reg2_i(ex_reg2_i),
         .wd_i(ex_wd_i),

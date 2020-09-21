@@ -29,8 +29,8 @@ module hilo(
     input wire[`RegBus] hi_i,
     input wire[`RegBus] lo_i,
 
-    output wire[`RegBus] hi_o,
-    output wire[`RegBus] lo_o
+    output reg[`RegBus] hi_o,
+    output reg[`RegBus] lo_o
 );
 
     always @(posedge clk) begin
@@ -41,6 +41,6 @@ module hilo(
             hi_o <= hi_i;
             lo_o <= lo_i;
         end
-
-
     end
+    
+endmodule

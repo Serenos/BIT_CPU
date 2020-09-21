@@ -31,7 +31,7 @@ module insMem(
 
     reg [`InstBus] inst_mem[0:`InstMemNum-1];
     initial begin
-        $readmemh("/home/lixiang/Desktop/BIT_CPU/flowCpu_mips32/InstRom.data", inst_mem);
+        $readmemh("/home/lixiang/Desktop/BIT_CPU/flowCpu_mips32/test/InstRom3.data", inst_mem);
        
     end
     

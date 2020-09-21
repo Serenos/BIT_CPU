@@ -33,7 +33,7 @@ module ex(
 
     output reg[`RegAddrBus] wd_o,
     output reg wreg_o,
-    output reg[`RegBus] wdata_o
+    output reg[`RegBus] wdata_o,
 
     input wire[`RegBus] hi_i,
     input wire[`RegBus] lo_i,
@@ -120,10 +120,10 @@ module ex(
         if(rst == `RESETABLE) begin
             HI <= `ZEROWORD;
             LO <= `ZEROWORD;
-        end else if(mem_enhilo_i == `WRTIEABLE) begin
+        end else if(mem_enhilo_i == `WRITEABLE) begin
             HI <= mem_hi_i;
             LO <= mem_lo_i;
-        end else if(wb_enhilo_i == `WRTIEABLE) begin
+        end else if(wb_enhilo_i == `WRITEABLE) begin
             HI <= wb_hi_i;
             LO <= wb_lo_i;
         end else begin
@@ -138,7 +138,7 @@ module ex(
             moveres <= `ZEROWORD;
         end else begin
             moveres <= `ZEROWORD;
-            case(alu_op_i)
+            case(aluop_i)
                 `EXE_MFHI_OP: begin
                     moveres <= HI;
                 end
@@ -160,7 +160,7 @@ module ex(
 
     always @(*) begin
         wd_o <= wd_i;
-        if(((alu_op_i==`EXE_ADD_OP)||(alu_op_i==`EXE_ADDI_OP)||(alu_op_i==`EXE_SUB_OP))
+        if(((aluop_i==`EXE_ADD_OP)||(aluop_i==`EXE_ADDI_OP)||(aluop_i==`EXE_SUB_OP))
                     && (over_sum==1'b1)) begin
                         wreg_o <= `UNWRITEABLE;
                     end else begin
@@ -191,26 +191,25 @@ module ex(
 
 
 
-    //for MTHI MTLO
     always @(*) begin
         if(rst == `RESETABLE) begin
             enhilo_o <= `UNWRITEABLE;
             hi_o <= `ZEROWORD;
             lo_o <= `ZEROWORD;
-        end else if((alu_op_i==`EXE_MULT_OP)||(alu_op_i==`EXE_MULTU)) begin
+        end else if((aluop_i==`EXE_MULT_OP)||(aluop_i==`EXE_MULTU_OP)) begin
             enhilo_o <= `WRITEABLE;
             hi_o <= mulres[63:32];
             lo_o <= mulres[31:0];
-        end else if(alu_op_i == `EXE_MTHI_OP) begin
+        end else if(aluop_i == `EXE_MTHI_OP) begin
             enhilo_o <= `WRITEABLE;
             hi_o <= reg1_i;
             lo_o <= LO;
-        end else if(alu_op_i == `EXE_MTLO_OP) begin
-            enhilo <= `WRITEABLE;
+        end else if(aluop_i == `EXE_MTLO_OP) begin
+            enhilo_o <= `WRITEABLE;
             hi_o <= HI;
             lo_o <= reg1_i;
         end else begin
-            whilo_o <= `UNWRITEABLE;
+            enhilo_o <= `UNWRITEABLE;
             hi_o <= `ZEROWORD;
             lo_o <= `ZEROWORD;
         end
@@ -224,9 +223,9 @@ module ex(
     //判断overflow add,addi,sub
     assign over_sum = (((!reg1_i[31] && !reg2_i_mux[31]) && result_sum[31])||
                         ((reg1_i[31] && reg2_i_mux[31]) && !result_sum[31]));
-    assign req1_lt_reg2 = ((alu_op_i==`EXE_SLT_OP))?
+    assign req1_lt_reg2 = ((aluop_i==`EXE_SLT_OP))?
                             ((reg1_i[31] && !reg2_i[31])||(!reg1_i[31] && !reg2_i[31] && result_sum[31])||
-                            (reg1_i[31] && reg2_i[31] && result_sum[31])) : (reg1_i < reg2_i)
+                            (reg1_i[31] && reg2_i[31] && result_sum[31])) : (reg1_i < reg2_i);
 
     always @(*) begin
         if(rst == `RESETABLE) begin
@@ -237,6 +236,9 @@ module ex(
                     arithmeticres <= reg1_lt_reg2;
                 end
                 `EXE_ADD_OP, `EXE_ADDI_OP, `EXE_ADDU_OP, `EXE_ADDIU_OP:begin
+                    arithmeticres <= result_sum;
+                end
+                `EXE_SUB_OP, `EXE_SUBU_OP: begin
                     arithmeticres <= result_sum;
                 end
                 `EXE_CLZ_OP:begin
@@ -250,10 +252,10 @@ module ex(
     end     
 
     /***乘法运算***/
-    assign opdata1_mult = (((alu_op_i==`EXE_MUL_OP)||(alu_op_i==`EXE_MULT_OP))&&(reg1_i[31]==1'b1))?
+    assign opdata1_mult = (((aluop_i==`EXE_MUL_OP)||(aluop_i==`EXE_MULT_OP))&&(reg1_i[31]==1'b1))?
                         (~reg1_i+1):reg1_i;               
 
-    assign opdata2_mult = (((alu_op_i==`EXE_MUL_OP)||(alu_op_i==`EXE_MULT_OP))&&(reg2_i[31]==1'b1))?
+    assign opdata2_mult = (((aluop_i==`EXE_MUL_OP)||(aluop_i==`EXE_MULT_OP))&&(reg2_i[31]==1'b1))?
                         (~reg2_i+1):reg2_i;    
 
     assign hilo_temp = opdata1_mult * opdata2_mult;
@@ -261,12 +263,13 @@ module ex(
     always @(*) begin
         if(rst == `RESETABLE) begin
             mulres <= {`ZEROWORD, `ZEROWORD};
-        end else if((alu_op_i==`EXE_MUL_OP)||(alu_op_i==`EXE_MULT_OP)) begin
+        end else if((aluop_i==`EXE_MUL_OP)||(aluop_i==`EXE_MULT_OP)) begin
             if(reg1_i[31] ^ reg2_i[31] ==1'b1) begin
                 mulres <= ~hilo_temp+1;
             end else begin
                 mulres <= hilo_temp;
             end
         end
+    end
 
 endmodule

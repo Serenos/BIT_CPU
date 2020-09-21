@@ -27,8 +27,8 @@ module testbench(
     initial begin
         rst=1'b1;
         clk = 1'b0;
-        #20 rst=1'b1;
-        #20 rst=1'b0;
+        #10 rst=1'b1;
+        #10 rst=1'b0;
         
         $display("running...");
     end

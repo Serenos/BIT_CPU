@@ -93,25 +93,68 @@ module id(
                         5'b00000: begin
                             case(funcode)
                                 `EXE_OR: begin
-                                    
+                                    wreg_o <= `WRITEABLE;
+                                    aluop_o <= `EXE_OR_OP;
+                                    alusel_o <= `EXE_RES_LOGIC;
+                                    en_reg_read1_o <= 1'b1;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;
                                 end
                                 `EXE_AND: begin
-                                    
+                                    wreg_o <= `WRITEABLE;
+                                    aluop_o <= `EXE_AND_OP;
+                                    alusel_o <= `EXE_RES_LOGIC;
+                                    en_reg_read1_o <= 1'b1;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;
                                 end
                                 `EXE_XOR: begin
-                                    
+                                    wreg_o <= `WRITEABLE;
+                                    aluop_o <= `EXE_XOR_OP;
+                                    alusel_o <= `EXE_RES_LOGIC;
+                                    en_reg_read1_o <= 1'b1;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;                                    
                                 end
                                 `EXE_NOR: begin
-                                    
+                                    wreg_o <= `WRITEABLE;
+                                    aluop_o <= `EXE_NOR_OP;
+                                    alusel_o <= `EXE_RES_LOGIC;
+                                    en_reg_read1_o <= 1'b1;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;                                    
                                 end
                                 `EXE_SLLV:begin
-                                    
+                                    wreg_o <= `WRITEABLE;
+                                    aluop_o <= `EXE_SLL_OP;
+                                    alusel_o <= `EXE_RES_SHIFT;
+                                    en_reg_read1_o <= 1'b1;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;                                    
                                 end
                                 `EXE_SRLV: begin
-                                    
+                                    wreg_o <= `WRITEABLE;
+                                    aluop_o <= `EXE_SRL_OP;
+                                    alusel_o <= `EXE_RES_SHIFT;
+                                    en_reg_read1_o <= 1'b1;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;                                     
                                 end
                                 `EXE_SRAV: begin
-                                    
+                                    wreg_o <= `WRITEABLE;
+                                    aluop_o <= `EXE_SRA_OP;
+                                    alusel_o <= `EXE_RES_SHIFT;
+                                    en_reg_read1_o <= 1'b1;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;                                     
+                                end
+                                `EXE_SYNC: begin
+                                    wreg_o <= `UNWRITEABLE;
+                                    aluop_o <= `EXE_NOP_OP;
+                                    alusel_o <= `EXE_RES_NOP;
+                                    en_reg_read1_o <= 1'b0;
+                                    en_reg_read2_o <= 1'b1;
+                                    instValid <= `InstValid;                                     
                                 end
                                 `EXE_SLT: begin
                                     wreg_o <= `WRITEABLE;
@@ -163,7 +206,7 @@ module id(
                                     instValid <= `InstValid;                                    
                                 end
                                 `EXE_MULT:begin
-                                    wreg_o <= `WRITEUNABLE;
+                                    wreg_o <= `UNWRITEABLE;
                                     aluop_o <= `EXE_MULT_OP;
                                     //alusel_o <= `EXE_RES_ARITHMETIC;
                                     en_reg_read1_o <= 1'b1;
@@ -171,7 +214,7 @@ module id(
                                     instValid <= `InstValid;                                      
                                 end
                                 `EXE_MULTU:begin
-                                    wreg_o <= `WRITEUNABLE;
+                                    wreg_o <= `UNWRITEABLE;
                                     aluop_o <= `EXE_MULTU_OP;
                                     //alusel_o <= `EXE_RES_ARITHMETIC;
                                     en_reg_read1_o <= 1'b1;
@@ -226,7 +269,15 @@ module id(
                     imm <= { inst_i[15:0], 16'h0};
                     wd_o <= inst_i[20:16];
                     instValid <= `InstValid;
-                end       
+                end   
+                `EXE_PREF:begin
+                    wreg_o <= `UNWRITEABLE;
+                    aluop_o <= `EXE_NOP_OP;
+                    alusel_o <= `EXE_RES_NOP;
+                    en_reg_read1_o <= 1'b0;
+                    en_reg_read2_o <= 1'b0;
+                    instValid <= `InstValid;
+                end    
                  `EXE_MOVN: begin
                     aluop_o <= `EXE_MOVN_OP;
                     alusel_o <= `EXE_RES_MOVE;
@@ -345,7 +396,7 @@ module id(
                         `EXE_MUL:begin
                             wreg_o <= `WRITEABLE;
                             aluop_o <= `EXE_MUL_OP;
-                            alusel_o <= `EXE_RES_ARITHMETIC;
+                            alusel_o <= `EXE_RES_MUL;
                             en_reg_read1_o <= 1'b1;
                             en_reg_read2_o <= 1'b1;
                             instValid <= `InstValid;                            
@@ -361,7 +412,7 @@ module id(
             if(inst_i[31:21] == 11'b00000000000) begin
                 if(funcode == `EXE_SLL) begin
                     wreg_o <= `WRITEABLE;
-                    aluop_o <= `EXE__SLL_OP;
+                    aluop_o <= `EXE_SLL_OP;
                     alusel_o <= `EXE_RES_SHIFT;
                     en_reg_read1_o <= 1'b0;
                     en_reg_read2_o <= 1'b1;
@@ -371,7 +422,7 @@ module id(
 
                 end else if(funcode == `EXE_SRL) begin
                     wreg_o <= `WRITEABLE;
-                    aluop_o <= `EXE__SRL_OP;
+                    aluop_o <= `EXE_SRL_OP;
                     alusel_o <= `EXE_RES_SHIFT;
                     en_reg_read1_o <= 1'b0;
                     en_reg_read2_o <= 1'b1;
@@ -397,10 +448,10 @@ module id(
         if(rst == `RESETABLE) begin
             reg1_o <= `ZEROWORD;
         //执行阶段数据前推
-        end else if(en_reg_read1_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg_addr1_o) begin
+        end else if(en_reg_read1_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wd_i == reg_addr1_o) begin
             reg1_o <= ex_wdata_i;
         //访存阶段数据前推
-        end else if(en_reg_read1_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg_addr1_o) begin
+        end else if(en_reg_read1_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wd_i == reg_addr1_o) begin
             reg1_o <= mem_wdata_i;
         end else if(en_reg_read1_o == 1'b1) begin
             reg1_o <= reg_data1_i;
@@ -415,13 +466,13 @@ module id(
         if(rst == `RESETABLE) begin
             reg2_o <= `ZEROWORD;
         //执行阶段数据前推
-        end else if(en_reg_read2_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wdata_i == reg_addr2_o) begin
+        end else if(en_reg_read2_o == 1'b1 && ex_wreg_i == 1'b1 && ex_wd_i == reg_addr2_o) begin
             reg2_o <= ex_wdata_i;
         //访存阶段数据前推
-        end else if(en_reg_read2_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wdata_i == reg_addr2_o) begin
+        end else if(en_reg_read2_o == 1'b1 && mem_wreg_i == 1'b1 && mem_wd_i == reg_addr2_o) begin
             reg2_o <= mem_wdata_i;
         end else if(en_reg_read2_o == 1'b1) begin
-            reg2_o <= reg_data1_i;
+            reg2_o <= reg_data2_i;
         end else if(en_reg_read2_o == 1'b0) begin
             reg2_o <= imm;
         end else begin
