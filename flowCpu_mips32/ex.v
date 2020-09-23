@@ -238,7 +238,7 @@ module ex(
     //判断overflow add,addi,sub
     assign over_sum = (((!reg1_i[31] && !reg2_i_mux[31]) && result_sum[31])||
                         ((reg1_i[31] && reg2_i_mux[31]) && !result_sum[31]));
-    assign req1_lt_reg2 = ((aluop_i==`EXE_SLT_OP))?
+    assign reg1_lt_reg2 = (aluop_i==`EXE_SLT_OP)?
                             ((reg1_i[31] && !reg2_i[31])||(!reg1_i[31] && !reg2_i[31] && result_sum[31])||
                             (reg1_i[31] && reg2_i[31] && result_sum[31])) : (reg1_i < reg2_i);
 
