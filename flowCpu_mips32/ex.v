@@ -50,7 +50,12 @@ module ex(
     output reg enhilo_o,
 
     input wire is_in_delayslot_i,
-    input wire[`RegBus] link_addr_i
+    input wire[`RegBus] link_addr_i,
+
+    input wire[`RegBus] inst_i,
+    output wire[`AluOpBus] aluop_o,
+    output wire[`RegBus] mem_addr_o,
+    output wire[`RegBus] reg2_o
 
 );
     reg[`RegBus] logicout;
@@ -70,6 +75,10 @@ module ex(
     wire[`RegBus] opdata2_mult;
     wire[`DoubleRegBus] hilo_temp;
     reg[`DoubleRegBus] mulres;
+    
+    assign aluop_o = aluop_i;
+    assign mem_addr_o = reg1_i + {{16{inst_i[15]}}, inst_i[15:0]};
+    assign reg2_o = reg2_i;
 
     //logic 
     always @(*) begin
@@ -106,7 +115,7 @@ module ex(
                     shiftres <= reg2_i << reg1_i[4:0];
                 end
                 `EXE_SRL_OP:begin
-                    shiftres <= ~(reg1_i | reg2_i);
+                    shiftres <= reg2_i >> reg1_i[4:0];
                 end
                 `EXE_SRA_OP:begin
                     shiftres <= ({32{reg2_i[31]}}<<(6'd32-{1'b0,reg1_i[4:0]})) | reg2_i>>reg1_i[4:0];

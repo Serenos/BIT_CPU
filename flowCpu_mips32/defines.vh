@@ -61,8 +61,8 @@
 `define EXE_SYNC 6'b001111//funcode
 `define EXE_PREF 6'b110011
 
-`define EXE_MOVN 6'b001010
-`define EXE_MOVZ 6'b001011
+`define EXE_MOVN 6'b001011
+`define EXE_MOVZ 6'b001010
 `define EXE_MFHI 6'b010000
 `define EXE_MTHI 6'b010001
 `define EXE_MFLO 6'b010010
@@ -97,6 +97,20 @@
 `define EXE_BLTZ 5'b00000
 `define EXE_BLTZAL 5'b10000
 `define EXE_BNE 6'b000101
+
+`define EXE_LB 6'b100000
+`define EXE_LBU 6'b100100
+`define EXE_LH 6'b100001
+`define EXE_LHU 6'b100100
+`define EXE_LW 6'b100011
+`define EXE_LWL 6'b100010
+`define EXE_LWR 6'b100110
+`define EXE_SB 6'b101000
+`define EXE_SH 6'b101001
+`define EXE_SW 6'b101011
+`define EXE_SWL 6'b101010
+`define EXE_SWR 6'b101110
+
 
 
 `define EXE_SPECIAL_INST 6'b000000//funcode
@@ -136,7 +150,32 @@
 `define EXE_MULT_OP 8'b00011011
 `define EXE_MULTU_OP 8'b00011100
 
+`define EXE_J_OP 8'b00011101
+`define EXE_JAL_OP 8'b00011110
+`define EXE_JALR_OP 8'b00011111
+`define EXE_JR_OP 8'b00100000
+`define EXE_BEQ_OP 8'b00100001
+`define EXE_BGEZ_OP 8'b00100010 //[20:15]
+`define EXE_BGEZAL_OP 8'b00100011
+`define EXE_BGTZ_OP 8'b00100100
+`define EXE_BLEZ_OP 8'b00100101
+`define EXE_BLTZ_OP 8'b00100110
+`define EXE_BLTZAL_OP 8'b00100111
+`define EXE_BNE_OP 8'b00101000
 
+
+`define EXE_LB_OP 8'b00101001
+`define EXE_LBU_OP 8'b00101010
+`define EXE_LH_OP 8'b00101011
+`define EXE_LHU_OP 8'b00101100
+`define EXE_LW_OP 8'b00101101
+`define EXE_LWL_OP 8'b00101110
+`define EXE_LWR_OP 8'b00101111
+`define EXE_SB_OP 8'b00110000
+`define EXE_SH_OP 8'b00110001
+`define EXE_SW_OP 8'b00110010
+`define EXE_SWL_OP 8'b00110011
+`define EXE_SWR_OP 8'b00110100
 
 //AluSel
 `define EXE_RES_LOGIC 3'b001
@@ -144,7 +183,10 @@
 `define EXE_RES_MOVE 3'b011
 `define EXE_RES_ARITHMETIC 3'b100
 `define EXE_RES_MUL 3'b101
+`define EXE_RES_JUMP_BRANCH 3'b110
+`define EXE_RES_LOAD_STORE 3'b111
 `define EXE_RES_NOP 3'b000
+
 
 
 /****** instruction ROM related ******/
@@ -162,54 +204,10 @@
 `define RegNumLog2 5
 `define NOPRegAddr 5'b00000
 
+/****** datamem related ******/
+`define DataAddrBus 4:0
+`define DataBus 31:0
+`define DataNum 32
+`define DataNumLog 5
+`define ByteWidth 7:0
 
-
-`define REGNUM 32
-// opcode
-`define OP_ALL_ZERO 6'b000000
-`define OP_LW 6'b100011
-`define OP_ORI 6'b001101
-`define OP_REGIMM 6'b000001
-`define OP_LW 6'b100011
-`define OP_ORI 6'b001101
-`define OP_ADDI 6'b001000
-`define OP_ADDIU 6'b001001
-`define OP_ALL_ZERO 6'b000000
-`define OP_SLTI 6'b001010
-`define OP_SLTIU 6'b001011
-`define OP_BEQ 6'b000100
-`define OP_BNE 6'b000101
-`define OP_BGTZ 6'b000111
-`define OP_BLEZ 6'b000110
-`define OP_J 6'b000010
-`define OP_JAL 6'b000011
-`define OP_ANDI 6'b001100  
-`define OP_XORI 6'b001110  
-`define OP_LUI 6'b001111  
-/*****  load and store instr  *******/
-`define OP_LB  6'b100000 
-`define OP_LBU 6'b100100
-`define OP_LH 6'b100001
-`define OP_LHU 6'b100101
-`define OP_LW 6'b100011
-`define OP_SB 6'b101000
-`define OP_SH 6'b101001
-`define OP_SW 6'b101011
-`define OP_LWL 6'b100010
-`define OP_LWR 6'b100110
-`define OP_SWL 6'b101010
-`define OP_SWR 6'b101110
-`define OP_CP0 6'b010000
-// opcode over
-`define FUNC_ADD 6'b100000
-`define FUNC_ADDU 6'b100001
-`define FUNC_SRAV 6'b000111
-
-// ALU code
-`define ALU_ADD 5'b00010
-`define ALU_ADD_OVERFLOW 5'b10010
-`define ALU_SUB 5'b00110
-`define ALU_OR 5'b00001
-`define ALU_NONE 5'b00000
-`define ALU_SRAV 5'b00011
-// ALU code over

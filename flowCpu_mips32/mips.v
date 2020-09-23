@@ -24,10 +24,18 @@
 module mips(
     input clk,
     input rst,
-    input wire[`InstBus] rom_data_i,
 
+    input wire[`InstBus] rom_data_i,
     output wire[`InstAddrBus] rom_addr_o,
-    output wire rom_ce_o
+    output wire rom_ce_o,
+
+    input wire[`DataBus] ram_data_i,
+    output wire[`DataAddrBus] ram_addr_o,
+    output wire ram_we_o,
+    output wire [3:0] ram_sel_o,
+    output wire[`DataBus] ram_data_o,
+    output wire ram_ce_o
+
 );
 
 //if_id <-> id
@@ -48,6 +56,7 @@ module mips(
     wire id_next_inst_in_delayslot_o;
     wire[`RegBus] id_branch_target_o;
     wire id_branch_flag_o;
+    wire[`RegBus] id_inst_o;
 
 //id_ex <-> ex
     wire[`AluOpBus] ex_aluop_i;
@@ -59,6 +68,7 @@ module mips(
     wire ex_is_in_delayslot_o;
     wire ex_link_addr_o;
     wire is_in_delayslot_o;
+    wire[`RegBus]ex_inst_i;
 
 //ex <-> ex_mem
 
@@ -69,6 +79,9 @@ module mips(
     wire ex_enhilo_o;
     wire[`RegBus] ex_hi_o;
     wire[`RegBus] ex_lo_o;
+    wire[`AluOpBus] ex_aluop_o;
+    wire[`RegBus] ex_mem_addr_o;
+    wire[`RegBus] ex_reg2_o;
 
 //ex_mem <-> mem
 
@@ -76,17 +89,38 @@ module mips(
     wire[`RegAddrBus] mem_wd_i;
     wire[`RegBus] mem_wdata_i;
 
+    wire[`AluOpBus] mem_aluop_i;
+    wire[`RegBus] mem_mem_addr_i;
+    wire[`RegBus] mem_reg2_i;
+
+    wire[`RegBus]mem_hi_i;
+    wire[`RegBus]mem_lo_i;
+    wire mem_enhilo_i;
+
 //mem <-> mem_wb
 
     wire mem_wreg_o;
     wire[`RegAddrBus] mem_wd_o;
     wire[`RegBus] mem_wdata_o;
 
+    wire[`RegBus]mem_hi_o;
+    wire[`RegBus]mem_lo_o;
+    wire mem_enhilo_o;
+
+
+
 //mem_wb <-> hilo
 
     wire wb_wreg_i;
     wire[`RegAddrBus] wb_wd_i;
     wire[`RegBus] wb_wdata_i;
+
+    wire[`RegBus]wb_hi_i;
+    wire[`RegBus]wb_lo_i;
+    wire wb_enhilo_i;
+
+    wire[`RegBus]hilo_hi_o;
+    wire[`RegBus]hilo_lo_o;
 
 //id <-> regfile
     wire reg1_read;
@@ -150,7 +184,10 @@ module mips(
         .branch_target_addr_o(id_branch_target_o),
         .link_addr_o(id_link_addr_o),
         .is_in_delayslot_o(id_is_in_delayslot_o),
-        .next_inst_in_delayslot_o(id_next_inst_in_delayslot_o)
+        .next_inst_delayslot_o(id_next_inst_in_delayslot_o),
+        
+        .inst_o(id_inst_o)
+
 
     );
 
@@ -180,7 +217,7 @@ module mips(
         .id_wreg(id_wreg_o),
         .id_link_addr(id_link_addr_o),
         .id_is_in_delayslot(id_is_in_delayslot_o),
-        .next_inst_in_delayslot(id_next_inst_in_delayslot_o),
+        .next_inst_in_delayslot_i(id_next_inst_in_delayslot_o),
 
         .ex_aluop(ex_aluop_i),
         .ex_alusel(ex_alusel_i),
@@ -190,7 +227,10 @@ module mips(
         .ex_wreg(ex_wreg_i),
         .ex_is_in_delayslot(ex_is_in_delayslot_o),
         .ex_link_addr(ex_link_addr_o),
-        .is_in_delayslot_o(is_in_delayslot_o)
+        .is_in_delayslot_o(is_in_delayslot_o),
+
+        .id_inst(id_inst_o),
+        .ex_inst(ex_inst_i)
 
     );
 
@@ -220,7 +260,12 @@ module mips(
 
         .hi_o(ex_hi_o),
         .lo_o(ex_lo_o),
-        .enhilo_o(ex_enhilo_o)
+        .enhilo_o(ex_enhilo_o),
+
+        .inst_i(ex_inst_i),
+        .aluop_o(ex_aluop_o),
+        .mem_addr_o(ex_mem_addr_o),
+        .reg2_o(ex_reg2_o)
         
     );
 
@@ -239,7 +284,14 @@ module mips(
         .ex_lo(ex_lo_o),
         .mem_enhilo(mem_enhilo_i),
         .mem_hi(mem_hi_i),
-        .mem_lo(mem_lo_i)
+        .mem_lo(mem_lo_i),
+
+        .ex_aluop(ex_aluop_o),
+        .ex_mem_addr(ex_mem_addr_o),
+        .ex_reg2(ex_reg2_o),
+        .mem_aluop(mem_aluop_i),
+        .mem_mem_addr(mem_mem_addr_i),
+        .mem_reg2(mem_reg2_i)
     );
 
     mem mem0(
@@ -250,16 +302,28 @@ module mips(
         .wreg_i(mem_wreg_i),
         .wdata_i(mem_wdata_i),
 
+        .hi_i(mem_hi_i),
+        .lo_i(mem_lo_i),
+        .enhilo_i(mem_enhilo_i),
+
         .wd_o(mem_wd_o),
         .wreg_o(mem_wreg_o),
         .wdata_o(mem_wdata_o),
 
-        .hi_i(mem_hi_i),
-        .lo_i(mem_lo_i),
-        .enhilo_i(mem_enhilo_i),
         .hi_o(mem_hi_o),
         .lo_o(mem_lo_o),
-        .enhilo_o(mem_enhilo_o)
+        .enhilo_o(mem_enhilo_o),
+
+
+        .aluop_i(mem_aluop_i),
+        .mem_addr_i(mem_mem_addr_i),
+        .reg2_i(mem_reg2_i),
+        .mem_data_i(ram_data_i), //data from dataMem
+        .mem_addr_o(ram_addr_o),
+        .mem_we_o(ram_we_o),
+        .mem_sel_o(ram_sel_o),
+        .mem_data_o(ram_data_o),
+        .mem_ce_o(ram_ce_o)
     );
 
     mem_wb mem_wb0(
