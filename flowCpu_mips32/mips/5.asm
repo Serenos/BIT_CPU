@@ -1,3 +1,4 @@
+#test simple add
 ori $1, $0, 0x8000
 sll $1, $1, 16
 ori $1, $1, 0x0010

@@ -48,7 +48,7 @@ module pc(
             pc <= 32'h00000000;
         end else begin
             if(branch_flag_i == `BRANCH) begin
-                
+                pc <= branch_target_addr_i;
             end else begin
                 pc <= pc + 4'h4;
             end    

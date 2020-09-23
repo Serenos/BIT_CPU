@@ -66,7 +66,7 @@ module mips(
     wire ex_wreg_i;
     wire[`RegAddrBus] ex_wd_i;
     wire ex_is_in_delayslot_o;
-    wire ex_link_addr_o;
+    wire[`RegBus] ex_link_addr_o;
     wire is_in_delayslot_o;
     wire[`RegBus]ex_inst_i;
 

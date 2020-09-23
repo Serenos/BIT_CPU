@@ -475,7 +475,8 @@ module id(
                     instValid <= `InstValid;                    
                 end
                 `EXE_JAL:begin
-                    wreg_o <= `UNWRITEABLE;
+                    wreg_o <= `WRITEABLE;
+                    wd_o <= 5'b11111;
                     aluop_o <= `EXE_JAL_OP;
                     alusel_o <= `EXE_RES_JUMP_BRANCH;
                     en_reg_read1_o <= 1'b0;

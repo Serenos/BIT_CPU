@@ -1,3 +1,4 @@
+#test move
 lui $1, 0x0000
 lui $2, 0xffff
 lui $3, 0x0505

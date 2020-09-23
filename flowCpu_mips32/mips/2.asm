@@ -1,3 +1,4 @@
+#test logic 
 lui $1, 0x0101
 ori $1, $1, 0x0101
 ori $2, $1, 0x1100

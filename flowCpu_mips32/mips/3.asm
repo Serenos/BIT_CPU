@@ -1,3 +1,4 @@
+#test shift
 lui $2, 0x0404
 ori $2, $2, 0x0404
 ori $7, $0, 0x7

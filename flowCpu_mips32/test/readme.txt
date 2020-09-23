@@ -7,6 +7,6 @@
 + InstRom4 for the move instruction test(finish)
 + InstRom5 for the simple calculation instruction test(finish)
 + InstRom6 DIV
-+ InstRom7 for the jump instruction test 
++ InstRom7 for the jump instruction test (finish)
 + InstRom8 for the load and store instruction test(finish)
 + InstRom8.2 for the load and store instruction test(finish)
