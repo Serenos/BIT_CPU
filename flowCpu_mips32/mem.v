@@ -42,11 +42,11 @@ module mem(
     input wire[`AluOpBus] aluop_i,
     input wire[`RegBus] mem_addr_i,
     input wire[`RegBus] reg2_i,
-    input wire[`RegBus] mem_data_i,//data from dataMem
-    output reg[`RegBus] mem_addr_o,
+    input wire[`DataBus] mem_data_i,//data from dataMem
+    output reg[`DataAddrBus] mem_addr_o,
     output reg mem_we_o, //write or not
     output reg[3:0] mem_sel_o, // choose which byte
-    output reg[`RegBus] mem_data_o,
+    output reg[`DataBus] mem_data_o,
     output reg mem_ce_o
 
 );

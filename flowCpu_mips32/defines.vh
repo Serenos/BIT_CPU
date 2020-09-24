@@ -205,9 +205,9 @@
 `define NOPRegAddr 5'b00000
 
 /****** datamem related ******/
-`define DataAddrBus 4:0
+`define DataAddrBus 10:0
 `define DataBus 31:0
-`define DataNum 32
-`define DataNumLog 5
+`define DataNum 2048
+`define DataNumLog 10
 `define ByteWidth 7:0
 

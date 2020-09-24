@@ -22,7 +22,8 @@
 
 module mips_sopc(
     input wire clk,
-    input wire rst
+    input wire rst,
+    output wire beem
 );
     wire[`InstAddrBus] inst_addr;
     wire[`InstBus] inst;
@@ -34,7 +35,9 @@ module mips_sopc(
     wire[`DataAddrBus] ram_addr_o;
     wire[`DataBus] ram_data_o;
     wire[3:0] ram_sel;
-
+    
+    assign beem = 1'b1;
+    
     mips mips0(
         .clk(clk),
         .rst(rst),
@@ -51,20 +54,32 @@ module mips_sopc(
         
     );
 
-    insMem insMem0(
-        .ce(rom_ce),
-        .addr(inst_addr),
-        .inst(inst)
+//    insMem insMem0(
+//        .ce(rom_ce),
+//        .addr(inst_addr),
+//        .inst(inst)
+//    );
+    
+    instMem instMem0(
+        .a(inst_addr[12:2]),
+        .spo(inst)
     );
 
+//    dataMem dataMem0(
+//        .clk(clk),
+//        .ce(ram_ce),
+//        .we(ram_we),
+//        .addr(ram_addr_o),
+//        .data_i(ram_data_o),
+//        .data_o(ram_data_i),
+//        .sel(ram_sel)
+//    );
     dataMem dataMem0(
         .clk(clk),
-        .ce(ram_ce),
         .we(ram_we),
-        .addr(ram_addr_o),
-        .data_i(ram_data_o),
-        .data_o(ram_data_i),
-        .sel(ram_sel)
+        .d(ram_data_o),
+        .a(ram_addr_o[10:0]),
+        .spo(ram_data_i)
     );
 
 endmodule
